@@ -1,9 +1,15 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iot_app/google_sign_in.dart';
+import 'package:provider/provider.dart';
 import 'style.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -11,9 +17,11 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: GetStarted());
-  }
+  Widget build(BuildContext context) => ChangeNotifierProvider(
+        create: (context) => GoogleSignInProvider(),
+        child:
+            MaterialApp(debugShowCheckedModeBanner: false, home: GetStarted()),
+      );
 }
 
 class GetStarted extends StatelessWidget {
@@ -67,7 +75,10 @@ class GetStarted extends StatelessWidget {
                         animationDuration: Duration(seconds: 5),
                         primary: Style.accentColor,
                         maximumSize: Size(408, 45),
-                        minimumSize: Size(308, 45)),
+                        minimumSize: Size(308, 45),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10), // <-- Radius
+                        )),
                     child: Text(
                       'Getting Started',
                       style: GoogleFonts.poppins(
@@ -91,12 +102,12 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        margin: EdgeInsets.fromLTRB(50, 70, 50, 70),
         child: SingleChildScrollView(
+          padding: EdgeInsets.fromLTRB(50, 0, 50, 0),
           child: Column(
             children: [
               Container(
-                margin: EdgeInsets.only(bottom: 48),
+                margin: EdgeInsets.only(bottom: 48, top: 70),
                 child: Image.asset('assets/images/login_illust.png'),
               ),
               Container(
@@ -110,10 +121,15 @@ class LoginPage extends StatelessWidget {
                 margin: EdgeInsets.only(top: 9, bottom: 9),
                 child: TextField(
                   decoration: InputDecoration(
+                      enabledBorder: const OutlineInputBorder(
+                        // width: 0.0 produces a thin "hairline" border
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide:
+                            const BorderSide(color: Colors.black, width: 1.0),
+                      ),
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(15)),
-                          borderSide:
-                              BorderSide(color: Colors.black, width: 5.0)),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
                       hintText: 'Your email ex: youremail@domain.com',
                       hintStyle: GoogleFonts.poppins(
                           fontSize: 12, color: Style.hintColor)),
@@ -126,8 +142,15 @@ class LoginPage extends StatelessWidget {
                   enableSuggestions: false,
                   autocorrect: false,
                   decoration: InputDecoration(
+                      enabledBorder: const OutlineInputBorder(
+                        // width: 0.0 produces a thin "hairline" border
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide:
+                            const BorderSide(color: Colors.black, width: 1.0),
+                      ),
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(15))),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
                       hintText: 'Your password here :)',
                       hintStyle: GoogleFonts.poppins(
                           fontSize: 12, color: Style.hintColor)),
@@ -158,7 +181,11 @@ class LoginPage extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                               minimumSize: Size(148, 45),
                               maximumSize: Size(200, 45),
-                              primary: Style.cancelColor),
+                              primary: Style.cancelColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(10), // <-- Radius
+                              )),
                           onPressed: () {
                             Navigator.pop(context);
                           },
@@ -174,7 +201,11 @@ class LoginPage extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                               minimumSize: Size(148, 45),
                               maximumSize: Size(200, 45),
-                              primary: Style.accentColor),
+                              primary: Style.accentColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(10), // <-- Radius
+                              )),
                           onPressed: () {},
                           child: Text('Login',
                               style: GoogleFonts.poppins(
@@ -184,6 +215,83 @@ class LoginPage extends StatelessWidget {
                     )
                   ],
                 ),
+              ),
+              Container(
+                  margin: EdgeInsets.only(top: 35),
+                  alignment: Alignment.topLeft,
+                  child: RichText(
+                      text: TextSpan(
+                          text: "Doesn't have account?",
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content:
+                                          Text('Tapped Doest have account')));
+                            },
+                          style: GoogleFonts.poppins(
+                              fontSize: 12, color: Colors.black)))),
+              Container(
+                margin: EdgeInsets.only(top: 10),
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        maximumSize: Size(408, 45),
+                        minimumSize: Size(308, 45),
+                        primary: Style.cancelColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10), // <-- Radius
+                        )),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('Create Account here',
+                        style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black))),
+              ),
+              Container(
+                  margin: EdgeInsets.only(top: 10),
+                  alignment: Alignment.center,
+                  child: RichText(
+                      text: TextSpan(
+                          text: "Or",
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text('Tapped forgot password')));
+                            },
+                          style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold)))),
+              Container(
+                margin: EdgeInsets.only(top: 10, bottom: 70),
+                child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                        maximumSize: Size(408, 45),
+                        minimumSize: Size(308, 45),
+                        primary: Colors.white,
+                        side: BorderSide(color: Colors.black),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10), // <-- Radius
+                        )),
+                    onPressed: () {
+                      final provider = Provider.of<GoogleSignInProvider>(
+                          context,
+                          listen: false);
+                      provider.googleLogin();
+                    },
+                    icon: FaIcon(
+                      FontAwesomeIcons.google,
+                      color: Colors.blue,
+                    ),
+                    label: Text('Create Account with Google',
+                        style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black))),
               )
             ],
           ),

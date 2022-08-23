@@ -179,7 +179,7 @@ class LoginPage extends StatelessWidget {
                       margin: EdgeInsets.only(right: 6),
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              minimumSize: Size(148, 45),
+                              minimumSize: Size(140, 45),
                               maximumSize: Size(200, 45),
                               primary: Style.cancelColor,
                               shape: RoundedRectangleBorder(
@@ -199,7 +199,7 @@ class LoginPage extends StatelessWidget {
                       margin: EdgeInsets.only(left: 6),
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              minimumSize: Size(148, 45),
+                              minimumSize: Size(140, 45),
                               maximumSize: Size(200, 45),
                               primary: Style.accentColor,
                               shape: RoundedRectangleBorder(
